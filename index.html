@@ -398,6 +398,13 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="giveHints" checked>
+                    <span>Give Imposters a Hint</span>
+                </label>
+            </div>
+
             <div id="setupError" class="error"></div>
 
             <button id="startGameBtn">Start Game</button>
@@ -512,7 +519,8 @@
             hint: null,
             categories: [],
             revealedPlayers: new Set(),
-            currentRevealPlayer: null
+            currentRevealPlayer: null,
+            giveHints: true
         };
 
         // DOM Elements
@@ -611,6 +619,7 @@
             gameState.numImposters = imposterCount;
             gameState.categories = selectedCategories;
             gameState.revealedPlayers = new Set();
+            gameState.giveHints = document.getElementById('giveHints').checked;
 
             // Select random word from selected categories
             let allWords = [];
@@ -627,6 +636,16 @@
                 imposterIndices.add(Math.floor(Math.random() * playerCount));
             }
             gameState.imposters = Array.from(imposterIndices);
+
+            // Debug logging
+            console.log('Game Setup:', {
+                playerCount: playerCount,
+                imposterCount: imposterCount,
+                impostersAssigned: gameState.imposters,
+                secretWord: gameState.secretWord,
+                hint: gameState.hint,
+                giveHints: gameState.giveHints
+            });
 
             // Setup player selection screen
             setupPlayerSelectionScreen();
@@ -678,12 +697,23 @@
                 mysteryBox.style.cursor = 'default';
                 mysteryBox.removeEventListener('click', revealWord);
 
-                if (gameState.imposters.includes(playerIndex)) {
+                const isImposter = gameState.imposters.includes(playerIndex);
+
+                // Debug logging
+                console.log('Revealing for player:', {
+                    playerIndex: playerIndex,
+                    playerName: gameState.players[playerIndex],
+                    isImposter: isImposter,
+                    allImposters: gameState.imposters
+                });
+
+                if (isImposter) {
                     // Player is an imposter
-                    wordReveal.innerHTML = `
-                        <div class="imposter-reveal">IMPOSTER</div>
-                        <div class="hint-text">Hint: ${gameState.hint}</div>
-                    `;
+                    let imposterHTML = '<div class="imposter-reveal">IMPOSTER</div>';
+                    if (gameState.giveHints) {
+                        imposterHTML += `<div class="hint-text">Hint: ${gameState.hint}</div>`;
+                    }
+                    wordReveal.innerHTML = imposterHTML;
                 } else {
                     // Player is not an imposter
                     wordReveal.innerHTML = `<div class="word-reveal">${gameState.secretWord}</div>`;
@@ -746,7 +776,8 @@
                 hint: null,
                 categories: [],
                 revealedPlayers: new Set(),
-                currentRevealPlayer: null
+                currentRevealPlayer: null,
+                giveHints: true
             };
 
             switchScreen(endGameScreen, setupScreen);
