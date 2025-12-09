@@ -329,95 +329,6 @@
             color: #e0e0e0;
         }
 
-        .csv-import-section {
-            margin-bottom: 25px;
-            background: #1a1a2e;
-            border: 2px solid #533483;
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .csv-import-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .csv-import-header h3 {
-            color: #e94560;
-            margin: 0;
-            font-size: 1.2em;
-        }
-
-        .csv-import-header .toggle-icon {
-            color: #e94560;
-            font-size: 1.5em;
-            transition: transform 0.3s;
-        }
-
-        .csv-import-header .toggle-icon.open {
-            transform: rotate(180deg);
-        }
-
-        .csv-import-content {
-            display: none;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #533483;
-        }
-
-        .csv-import-content.open {
-            display: block;
-        }
-
-        .csv-import-content p {
-            color: #e0e0e0;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-            line-height: 1.5;
-        }
-
-        .csv-import-content textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 12px;
-            background: #0f3460;
-            border: 2px solid #533483;
-            border-radius: 8px;
-            color: #e0e0e0;
-            font-family: monospace;
-            font-size: 14px;
-            resize: vertical;
-            margin-bottom: 10px;
-        }
-
-        .csv-import-content textarea:focus {
-            outline: none;
-            border-color: #e94560;
-        }
-
-        .csv-import-content .success-message {
-            color: #4ecca3;
-            background: #1a1a2e;
-            padding: 10px;
-            border-radius: 6px;
-            border-left: 4px solid #4ecca3;
-            display: none;
-            margin-top: 10px;
-        }
-
-        .csv-import-content .success-message.show {
-            display: block;
-        }
-
-        .csv-import-content button {
-            width: auto;
-            padding: 10px 20px;
-            margin-top: 5px;
-        }
-
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -477,21 +388,6 @@
                 <input type="number" id="imposterCount" min="1" value="1">
             </div>
 
-            <div class="csv-import-section">
-                <div class="csv-import-header" id="csvImportHeader">
-                    <h3>Import Clash Royale Cards (CSV)</h3>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div class="csv-import-content" id="csvImportContent">
-                    <p><strong>CSV Format:</strong> Paste your CSV data below. Each row should have a card name followed by 1-3 hints.</p>
-                    <p><strong>Example:</strong><br>
-                    <code style="color: #4ecca3;">Knight,armor,sword,defense<br>Wizard,spell,ranged,fire<br>Giant,big,tank</code></p>
-                    <textarea id="csvInput" placeholder="Card Name,Hint 1,Hint 2,Hint 3&#10;Knight,armor,sword,defense&#10;Wizard,spell,ranged,fire&#10;Giant,big,tank"></textarea>
-                    <button id="importCsvBtn">Import Cards</button>
-                    <div id="csvSuccessMessage" class="success-message"></div>
-                </div>
-            </div>
-
             <div class="form-group">
                 <label>Select Categories (at least one):</label>
                 <div class="category-options">
@@ -500,7 +396,7 @@
                         <span>Animals</span>
                     </label>
                     <label class="checkbox-label">
-                        <input type="checkbox" name="category" value="clashroyale" id="clashroyaleCheckbox" disabled>
+                        <input type="checkbox" name="category" value="clashroyale">
                         <span>Clash Royale Cards</span>
                     </label>
                 </div>
@@ -615,6 +511,107 @@
                 { word: "Goose", hint: "honk" },
                 { word: "Swan", hint: "graceful" },
                 { word: "Pelican", hint: "beak" }
+            ],
+            clashroyale: [
+                { word: "Royal Ghost", hints: ["Invisible", "Legendary", "Cloak"] },
+                { word: "Dagger Duchess", hints: ["Knife", "Girl", "Blonde"] },
+                { word: "Archer Queen", hints: ["Archer", "Hero", "Bow"] },
+                { word: "Princess Tower", hints: ["Basin", "Bow", "Ball"] },
+                { word: "Musketeer", hints: ["Gun", "Classic", "Pink"] },
+                { word: "Mini P.E.K.K.A", hints: ["Pancakes", "Robot", "Purple"] },
+                { word: "Royal Hogs", hints: ["Pigs", "Royal", "Dead"] },
+                { word: "Skeletons", hints: ["Bones", "Swarm", "Dead"] },
+                { word: "Electro Spirit", hints: ["King Tower", "Electric", "Cycle"] },
+                { word: "Ice Spirit", hints: ["Ice", "Cycle"] },
+                { word: "Heal Spirit", hints: ["Rework", "Healer", "Knight"] },
+                { word: "Zap", hints: ["Blue", "Stun", "Spell"] },
+                { word: "Goblins", hints: ["Green", "Swarm", "Early Arena"] },
+                { word: "Royal Giant", hints: ["Early Arena", "Epic"] },
+                { word: "Bomber", hints: ["Bomb", "Fly", "Cheap"] },
+                { word: "Barbarians", hints: ["Mustache", "Run", "Electric"] },
+                { word: "Bownadier", hints: ["Slow", "Push", "Evo"] },
+                { word: "Royal Recruits", hints: ["Wall", "3 Elixir", "Cheap"] },
+                { word: "Brawler", hints: ["New", "Orange", "Cheap"] },
+                { word: "Bandit", hints: ["Dash", "Hit", "Epic"] },
+                { word: "Log", hints: ["Cheap", "Legendary"] },
+                { word: "Wall Breakers", hints: ["Wall", "Bomb", "Epic"] },
+                { word: "Firecracker", hints: ["Rocket", "Pink"] },
+                { word: "Rage", hints: ["Lumberjack", "Speed", "Drug"] },
+                { word: "Golden Knight", hints: ["Champion", "Cheap"] },
+                { word: "Archers", hints: ["Early Arena", "Evo", "Pink"] },
+                { word: "Arrows", hints: ["3 Elixir", "Fly"] },
+                { word: "Witch", hints: ["Summon", "Purple", "Epic"] },
+                { word: "Cannon", hints: ["Defend", "Evo", "Cheap"] },
+                { word: "Knight", hints: ["Tank", "Mustache", "Epic"] },
+                { word: "Goblin Hut", hints: ["Swarm"] },
+                { word: "Guards", hints: ["Dead", "Armor"] },
+                { word: "Goblin Barrel", hints: ["Log", "Kill", "Tower"] },
+                { word: "Valkyrie", hints: ["Bald", "Broken", "Green"] },
+                { word: "Goblin Drill", hints: ["Drill", "Spawner", "Squad"] },
+                { word: "Skeleton Barrel", hints: ["Dead", "Fly", "Balloon"] },
+                { word: "Prince", hints: ["Charge", "Mustache", "Legendary"] },
+                { word: "Princess", hints: ["Girl", "W", "Legendary"] },
+                { word: "Little Prince", hints: ["M", "W", "Condition"] },
+                { word: "Hog Rider", hints: ["Hog", "Fast", "Epic"] },
+                { word: "Earthquake", hints: ["Hog Rider", "Fault"] },
+                { word: "Ice Wizard", hints: ["Slow", "Blue", "Brother"] },
+                { word: "Graveyard", hints: ["Poison", "Dead", "Spell"] },
+                { word: "Royal Delivery", hints: ["Slow", "Troop", "Fall"] },
+                { word: "Mega Minion", hints: ["Fly", "Tank", "Annoying"] },
+                { word: "Tornado", hints: ["Pull", "Slow", "Unique"] },
+                { word: "Three Musketeers", hints: ["Gun", "9 Elixir", "Epic"] },
+                { word: "P.E.K.K.A", hints: ["Robot", "Tank", "Big"] },
+                { word: "Fisherman", hints: ["Pull", "Royal Giant", "Unique"] },
+                { word: "Goblin Cage", hints: ["6 Elixir", "Rare"] },
+                { word: "Fireball", hints: ["Classic", "Orange"] },
+                { word: "Poison", hints: ["Spell", "Dot", "Orange"] },
+                { word: "Baby Dragon", hints: ["Fly", "Tank"] },
+                { word: "Skeleton Dragons", hints: ["Cheap", "Air", "Fly"] },
+                { word: "Mirror", hints: ["1 Elixir", "Spell"] },
+                { word: "Mortar", hints: ["Annoying", "4 Elixir"] },
+                { word: "Ice Golem", hints: ["Cheap", "4 Elixir", "Kite"] },
+                { word: "Flying Machine", hints: ["Fireball", "Fly", "Rare"] },
+                { word: "Dart Goblin", hints: ["Green", "Sniper"] },
+                { word: "Dark Prince", hints: ["Splash", "Armor", "Brother"] },
+                { word: "Mega Knight", hints: ["Epic", "7 Elixir", "Brother"] },
+                { word: "Freeze", hints: ["Ice", "Spell", "4 Elixir"] },
+                { word: "Furnace", hints: ["Spawner", "Rare"] },
+                { word: "Tesla", hints: ["Car", "Hides", "Electric"] },
+                { word: "Executioner", hints: ["Cleric", "Fireball"] },
+                { word: "Inferno Dragon", hints: ["Legendary", "Fly", "Armor"] },
+                { word: "Electro Wizard", hints: ["Legendary", "Brother", "Evo"] },
+                { word: "Sparky", hints: ["Car", "Electric"] },
+                { word: "Phoenix", hints: ["Legendary", "Spawn", "Fly"] },
+                { word: "Goblin Gang", hints: ["4 Elixir", "Epic"] },
+                { word: "Night Witch", hints: ["Spawner", "Girl", "Legendary"] },
+                { word: "Mighty Miner", hints: ["Drill", "Legendary"] },
+                { word: "Skeleton King", hints: ["Dead", "Spawn"] },
+                { word: "Miner", hints: ["Drill", "Evo"] },
+                { word: "Lava Hound", hints: ["Legendary", "Fly", "Mustache"] },
+                { word: "Rocket", hints: ["8 Elixir", "Destroy", "Classic"] },
+                { word: "Inferno Tower", hints: ["Defend", "5 Elixir"] },
+                { word: "Clone", hints: ["3 Elixir", "Stacked", "Purple"] },
+                { word: "Electro Dragon", hints: ["Electric", "Fly", "Evo"] },
+                { word: "Rascals", hints: ["Brother", "4 Elixir", "Gum"] },
+                { word: "Goblin Machine", hints: ["Spawner", "Legendary", "Machine"] },
+                { word: "Hunter", hints: ["Shotgun", "4 Elixir"] },
+                { word: "Golemsmith", hints: ["6 Elixir", "Unique"] },
+                { word: "Battle Healer", hints: ["6 Elixir", "Cycle"] },
+                { word: "Giant Skeleton", hints: ["Dead", "Bomb", "Hat"] },
+                { word: "Monk", hints: ["Champion", "8 Elixir"] },
+                { word: "Barbarian Hut", hints: ["Spawner", "Classic"] },
+                { word: "Battle Ram", hints: ["Broken", "Rare"] },
+                { word: "X-Bow", hints: ["Annoying", "Quick", "Tesla"] },
+                { word: "Lumberjack", hints: ["Annoying", "Spell", "Tonic"] },
+                { word: "Elixir Pump", hints: ["6 Elixir", "Healer", "Rare"] },
+                { word: "Lightning", hints: ["Spell", "Fly"] },
+                { word: "Pekka", hints: ["Annoying", "Scary", "Armor"] },
+                { word: "Dark Goblin", hints: ["Epic"] },
+                { word: "Goblin Curse", hints: ["Annoying", "Scary"] },
+                { word: "Magic Archer", hints: ["Splash", "Army", "Facial Hair"] },
+                { word: "Ram Rider", hints: ["Slow", "Fly"] },
+                { word: "Golem", hints: ["Slow", "Spawner", "Big"] },
+                { word: "Electro Giant", hints: ["Slow", "Stacked"] }
             ]
         };
 
@@ -631,61 +628,6 @@
             currentRevealPlayer: null,
             giveHints: true
         };
-
-        // CSV Import Functions
-        function parseCSV(csvText) {
-            const lines = csvText.trim().split('\n');
-            const cards = [];
-
-            lines.forEach((line, index) => {
-                const parts = line.split(',').map(part => part.trim()).filter(part => part);
-
-                if (parts.length < 2) {
-                    console.warn(`Skipping line ${index + 1}: Not enough data`);
-                    return;
-                }
-
-                const cardName = parts[0];
-                const hints = parts.slice(1, 4); // Get up to 3 hints
-
-                cards.push({
-                    word: cardName,
-                    hints: hints
-                });
-            });
-
-            return cards;
-        }
-
-        function importClashRoyaleCards(csvText) {
-            try {
-                const cards = parseCSV(csvText);
-
-                if (cards.length === 0) {
-                    throw new Error('No valid cards found in CSV');
-                }
-
-                gameData.clashroyale = cards;
-
-                // Enable the Clash Royale checkbox
-                const checkbox = document.getElementById('clashroyaleCheckbox');
-                checkbox.disabled = false;
-                checkbox.checked = true;
-
-                // Show success message
-                const successMsg = document.getElementById('csvSuccessMessage');
-                successMsg.textContent = `Successfully imported ${cards.length} Clash Royale cards!`;
-                successMsg.classList.add('show');
-
-                console.log('Imported Clash Royale cards:', cards);
-
-                return true;
-            } catch (error) {
-                alert(`Error importing CSV: ${error.message}`);
-                console.error('CSV Import Error:', error);
-                return false;
-            }
-        }
 
         // DOM Elements
         const setupScreen = document.getElementById('setupScreen');
@@ -725,29 +667,6 @@
 
         playerCountInput.addEventListener('input', updatePlayerNameInputs);
         updatePlayerNameInputs();
-
-        // CSV Import UI Event Listeners
-        const csvImportHeader = document.getElementById('csvImportHeader');
-        const csvImportContent = document.getElementById('csvImportContent');
-        const csvInput = document.getElementById('csvInput');
-        const importCsvBtn = document.getElementById('importCsvBtn');
-
-        csvImportHeader.addEventListener('click', () => {
-            const icon = csvImportHeader.querySelector('.toggle-icon');
-            icon.classList.toggle('open');
-            csvImportContent.classList.toggle('open');
-        });
-
-        importCsvBtn.addEventListener('click', () => {
-            const csvText = csvInput.value.trim();
-
-            if (!csvText) {
-                alert('Please paste CSV data first!');
-                return;
-            }
-
-            importClashRoyaleCards(csvText);
-        });
 
         // Show error message
         function showError(message) {
