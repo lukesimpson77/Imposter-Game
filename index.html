@@ -329,6 +329,95 @@
             color: #e0e0e0;
         }
 
+        .csv-import-section {
+            margin-bottom: 25px;
+            background: #1a1a2e;
+            border: 2px solid #533483;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .csv-import-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .csv-import-header h3 {
+            color: #e94560;
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .csv-import-header .toggle-icon {
+            color: #e94560;
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+
+        .csv-import-header .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .csv-import-content {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #533483;
+        }
+
+        .csv-import-content.open {
+            display: block;
+        }
+
+        .csv-import-content p {
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .csv-import-content textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            background: #0f3460;
+            border: 2px solid #533483;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+            margin-bottom: 10px;
+        }
+
+        .csv-import-content textarea:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        .csv-import-content .success-message {
+            color: #4ecca3;
+            background: #1a1a2e;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #4ecca3;
+            display: none;
+            margin-top: 10px;
+        }
+
+        .csv-import-content .success-message.show {
+            display: block;
+        }
+
+        .csv-import-content button {
+            width: auto;
+            padding: 10px 20px;
+            margin-top: 5px;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -388,12 +477,31 @@
                 <input type="number" id="imposterCount" min="1" value="1">
             </div>
 
+            <div class="csv-import-section">
+                <div class="csv-import-header" id="csvImportHeader">
+                    <h3>Import Clash Royale Cards (CSV)</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div class="csv-import-content" id="csvImportContent">
+                    <p><strong>CSV Format:</strong> Paste your CSV data below. Each row should have a card name followed by 1-3 hints.</p>
+                    <p><strong>Example:</strong><br>
+                    <code style="color: #4ecca3;">Knight,armor,sword,defense<br>Wizard,spell,ranged,fire<br>Giant,big,tank</code></p>
+                    <textarea id="csvInput" placeholder="Card Name,Hint 1,Hint 2,Hint 3&#10;Knight,armor,sword,defense&#10;Wizard,spell,ranged,fire&#10;Giant,big,tank"></textarea>
+                    <button id="importCsvBtn">Import Cards</button>
+                    <div id="csvSuccessMessage" class="success-message"></div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label>Select Categories (at least one):</label>
                 <div class="category-options">
                     <label class="checkbox-label">
                         <input type="checkbox" name="category" value="animals" checked>
                         <span>Animals</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="category" value="clashroyale" id="clashroyaleCheckbox" disabled>
+                        <span>Clash Royale Cards</span>
                     </label>
                 </div>
             </div>
@@ -517,11 +625,67 @@
             imposters: [],
             secretWord: null,
             hint: null,
+            selectedHints: {},  // Store selected hints for each imposter {playerIndex: hint}
             categories: [],
             revealedPlayers: new Set(),
             currentRevealPlayer: null,
             giveHints: true
         };
+
+        // CSV Import Functions
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const cards = [];
+
+            lines.forEach((line, index) => {
+                const parts = line.split(',').map(part => part.trim()).filter(part => part);
+
+                if (parts.length < 2) {
+                    console.warn(`Skipping line ${index + 1}: Not enough data`);
+                    return;
+                }
+
+                const cardName = parts[0];
+                const hints = parts.slice(1, 4); // Get up to 3 hints
+
+                cards.push({
+                    word: cardName,
+                    hints: hints
+                });
+            });
+
+            return cards;
+        }
+
+        function importClashRoyaleCards(csvText) {
+            try {
+                const cards = parseCSV(csvText);
+
+                if (cards.length === 0) {
+                    throw new Error('No valid cards found in CSV');
+                }
+
+                gameData.clashroyale = cards;
+
+                // Enable the Clash Royale checkbox
+                const checkbox = document.getElementById('clashroyaleCheckbox');
+                checkbox.disabled = false;
+                checkbox.checked = true;
+
+                // Show success message
+                const successMsg = document.getElementById('csvSuccessMessage');
+                successMsg.textContent = `Successfully imported ${cards.length} Clash Royale cards!`;
+                successMsg.classList.add('show');
+
+                console.log('Imported Clash Royale cards:', cards);
+
+                return true;
+            } catch (error) {
+                alert(`Error importing CSV: ${error.message}`);
+                console.error('CSV Import Error:', error);
+                return false;
+            }
+        }
 
         // DOM Elements
         const setupScreen = document.getElementById('setupScreen');
@@ -561,6 +725,29 @@
 
         playerCountInput.addEventListener('input', updatePlayerNameInputs);
         updatePlayerNameInputs();
+
+        // CSV Import UI Event Listeners
+        const csvImportHeader = document.getElementById('csvImportHeader');
+        const csvImportContent = document.getElementById('csvImportContent');
+        const csvInput = document.getElementById('csvInput');
+        const importCsvBtn = document.getElementById('importCsvBtn');
+
+        csvImportHeader.addEventListener('click', () => {
+            const icon = csvImportHeader.querySelector('.toggle-icon');
+            icon.classList.toggle('open');
+            csvImportContent.classList.toggle('open');
+        });
+
+        importCsvBtn.addEventListener('click', () => {
+            const csvText = csvInput.value.trim();
+
+            if (!csvText) {
+                alert('Please paste CSV data first!');
+                return;
+            }
+
+            importClashRoyaleCards(csvText);
+        });
 
         // Show error message
         function showError(message) {
@@ -624,11 +811,25 @@
             // Select random word from selected categories
             let allWords = [];
             selectedCategories.forEach(category => {
-                allWords = allWords.concat(gameData[category]);
+                if (gameData[category]) {
+                    allWords = allWords.concat(gameData[category]);
+                }
             });
+
+            if (allWords.length === 0) {
+                showError('No words available in selected categories!');
+                return;
+            }
+
             const selectedWordData = allWords[Math.floor(Math.random() * allWords.length)];
             gameState.secretWord = selectedWordData.word;
-            gameState.hint = selectedWordData.hint;
+
+            // Store the hint(s) - support both single hint and multiple hints
+            if (selectedWordData.hints) {
+                gameState.hint = selectedWordData.hints; // Array of hints
+            } else {
+                gameState.hint = selectedWordData.hint; // Single hint
+            }
 
             // Randomly assign imposters
             const imposterIndices = new Set();
@@ -637,6 +838,20 @@
             }
             gameState.imposters = Array.from(imposterIndices);
 
+            // Assign random hints to each imposter (if multiple hints available)
+            gameState.selectedHints = {};
+            if (Array.isArray(gameState.hint)) {
+                gameState.imposters.forEach(imposterIndex => {
+                    const randomHint = gameState.hint[Math.floor(Math.random() * gameState.hint.length)];
+                    gameState.selectedHints[imposterIndex] = randomHint;
+                });
+            } else {
+                // Single hint - all imposters get the same hint
+                gameState.imposters.forEach(imposterIndex => {
+                    gameState.selectedHints[imposterIndex] = gameState.hint;
+                });
+            }
+
             // Debug logging
             console.log('Game Setup:', {
                 playerCount: playerCount,
@@ -644,6 +859,7 @@
                 impostersAssigned: gameState.imposters,
                 secretWord: gameState.secretWord,
                 hint: gameState.hint,
+                selectedHints: gameState.selectedHints,
                 giveHints: gameState.giveHints
             });
 
@@ -711,7 +927,8 @@
                     // Player is an imposter
                     let imposterHTML = '<div class="imposter-reveal">IMPOSTER</div>';
                     if (gameState.giveHints) {
-                        imposterHTML += `<div class="hint-text">Hint: ${gameState.hint}</div>`;
+                        const playerHint = gameState.selectedHints[playerIndex];
+                        imposterHTML += `<div class="hint-text">Hint: ${playerHint}</div>`;
                     }
                     wordReveal.innerHTML = imposterHTML;
                 } else {
@@ -774,6 +991,7 @@
                 imposters: [],
                 secretWord: null,
                 hint: null,
+                selectedHints: {},
                 categories: [],
                 revealedPlayers: new Set(),
                 currentRevealPlayer: null,
