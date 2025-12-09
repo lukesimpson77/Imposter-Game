@@ -607,6 +607,7 @@
             hint: null,
             selectedHints: {},  // Store selected hints for each imposter {playerIndex: hint}
             categories: [],
+            selectedCategory: null,  // Track which category the word actually came from
             revealedPlayers: new Set(),
             currentRevealPlayer: null,
             giveHints: true
@@ -743,20 +744,27 @@
             gameState.giveHints = document.getElementById('giveHints').checked;
 
             // Select random word from selected categories
-            let allWords = [];
+            // Build array with category tracking
+            let allWordsWithCategory = [];
             selectedCategories.forEach(category => {
                 if (gameData[category]) {
-                    allWords = allWords.concat(gameData[category]);
+                    gameData[category].forEach(wordData => {
+                        allWordsWithCategory.push({
+                            ...wordData,
+                            category: category
+                        });
+                    });
                 }
             });
 
-            if (allWords.length === 0) {
+            if (allWordsWithCategory.length === 0) {
                 showError('No words available in selected categories!');
                 return;
             }
 
-            const selectedWordData = allWords[Math.floor(Math.random() * allWords.length)];
+            const selectedWordData = allWordsWithCategory[Math.floor(Math.random() * allWordsWithCategory.length)];
             gameState.secretWord = selectedWordData.word;
+            gameState.selectedCategory = selectedWordData.category;
 
             // Store the hint(s) - support both single hint and multiple hints
             if (selectedWordData.hints) {
@@ -772,13 +780,13 @@
             }
             gameState.imposters = Array.from(imposterIndices);
 
-            // Assign hints to each imposter
-            // For now, use the first hint (temporary - will implement random selection later)
+            // Assign random hints to each imposter
             gameState.selectedHints = {};
             if (Array.isArray(gameState.hint)) {
+                // Multiple hints available - randomly select one for each imposter
                 gameState.imposters.forEach(imposterIndex => {
-                    // Use first hint for now
-                    gameState.selectedHints[imposterIndex] = gameState.hint[0];
+                    const randomHintIndex = Math.floor(Math.random() * gameState.hint.length);
+                    gameState.selectedHints[imposterIndex] = gameState.hint[randomHintIndex];
                 });
             } else {
                 // Single hint - all imposters get the same hint
@@ -793,6 +801,7 @@
                 imposterCount: imposterCount,
                 impostersAssigned: gameState.imposters,
                 secretWord: gameState.secretWord,
+                selectedCategory: gameState.selectedCategory,
                 hint: gameState.hint,
                 selectedHints: gameState.selectedHints,
                 giveHints: gameState.giveHints
@@ -831,11 +840,10 @@
 
             revealPlayerName.textContent = playerName;
 
-            // Display categories
-            const categoriesText = gameState.categories.map(cat =>
-                cat.charAt(0).toUpperCase() + cat.slice(1)
-            ).join(', ');
-            categoryDisplay.textContent = `Category: ${categoriesText}`;
+            // Display only the category the word came from
+            const categoryName = gameState.selectedCategory.charAt(0).toUpperCase() + gameState.selectedCategory.slice(1);
+            const displayCategory = categoryName === 'Clashroyale' ? 'Clash Royale Cards' : categoryName;
+            categoryDisplay.textContent = `Category: ${displayCategory}`;
 
             // Reset mystery box
             mysteryBox.textContent = '?';
@@ -928,6 +936,7 @@
                 hint: null,
                 selectedHints: {},
                 categories: [],
+                selectedCategory: null,
                 revealedPlayers: new Set(),
                 currentRevealPlayer: null,
                 giveHints: true
